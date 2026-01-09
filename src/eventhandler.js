@@ -1,16 +1,16 @@
 export class EventHandler{
     
     constructor(dom, projectHandler){
-        this.dom = dom
+        this.dom = dom;
         this.projectHandler = projectHandler;
-        this.addListeners(this.dom)
-        this.projects = []
-        this.currentProject = undefined
-        this.currentTask = {}
+        this.addListeners();
+        this.projects = [];
+        this.currentProject = undefined;
+        this.currentTask = {};
     }
 
     findIndexOf(title, holder){
-        return holder.findIndex(item => item.obj.name == title)
+        return holder.findIndex(item => item.obj.name == title);
     }
 
     // callback functions
@@ -65,6 +65,7 @@ export class EventHandler{
         const projectIndex = this.findIndexOf(projectTitle, this.projects);
         this.currentProject = this.projects[projectIndex];
     }
+
     updateCurrentTask(){
         const taskIndex = this.currentProject.dom.currentTaskIndex;
         this.currentTask = {"dom": this.currentProject.dom.domTasks[taskIndex], "obj": this.currentProject.obj.items[taskIndex]};
@@ -74,8 +75,8 @@ export class EventHandler{
 
         //debug button
         const debugButton = document.querySelector("#view-projects");
-        debugButton.textContent = "debug"
-        debugButton.addEventListener("click", ()=> console.log(this.currentTask.dom.updatePriorityElem("high")))
+        debugButton.textContent = "debug";
+        debugButton.addEventListener("click", ()=> console.log(this.currentTask.dom.updatePriorityElem("high")));
 
         document.body.addEventListener("change", (event)=> {
             if (event.target.id == "new-priority-input"){
@@ -94,7 +95,6 @@ export class EventHandler{
         })
 
         document.body.addEventListener("click", (event) => {
-
             if (event.target.parentElement.id == "task-container" ){
                 const projectTitle = event.target.parentElement.parentElement.parentElement.firstChild.textContent;
                 this.updateCurrentProject(projectTitle);
@@ -122,7 +122,7 @@ export class EventHandler{
                         this.currentTask.dom.takeTitleInput();
                         break;
                     case("task-description"):
-                        console.log("user wants to edit the task description");
+                        this.currentTask.dom.takeDescriptionInput();
                         break;
                     case("task-due-date"):
                         this.currentTask.dom.takeDueDateInput();
@@ -132,17 +132,39 @@ export class EventHandler{
                         break;
                 }
                 
-            } 
+            }
+
+
             else if (event.target.parentElement.parentElement.id == "task-container"){
                 const projectTitle = event.target.parentElement.parentElement.parentElement.parentElement.firstChild.textContent
                 this.updateCurrentProject(projectTitle);
-                this.updateCurrentTask()
+                this.updateCurrentTask();
                 
                 if (event.target.id == "new-date-cancel"){
                     this.currentTask.dom.removeDueDateInput();  
                 }
-                if (event.target.id == "new-priority-cancel"){
+                else if (event.target.id == "new-priority-cancel"){
                     this.currentTask.dom.removePriorityInput();
+                }
+                else if (event.target.id == "new-title-submit"){
+                    const newTitle = this.currentTask.dom.newTitleInput.value
+                    if (newTitle != ""){
+                        this.currentTask.obj.title = newTitle
+                        this.currentTask.dom.updateTitle(true, newTitle);
+                    }
+                }
+                else if (event.target.id == "new-title-cancel"){
+                    this.currentTask.dom.updateTitle();
+                }
+                else if (event.target.id == "new-description-submit"){
+                    const newDescription = this.currentTask.dom.newDescriptionInput.value
+                    if (newDescription != ""){
+                        this.currentTask.obj.description = newDescription;
+                        this.currentTask.dom.updateDescription(true, newDescription);
+                    }
+                }
+                else if (event.target.id == "new-description-cancel"){
+                    this.currentTask.dom.updateDescription();
                 }
             }
 
@@ -158,9 +180,9 @@ export class EventHandler{
                     const DOMProject = event.target.parentElement;
                     const DOMProjectTitle = DOMProject.children[0].textContent;
                     const projectIndex = this.findIndexOf(DOMProjectTitle, this.projects);
-                    this.currentProject = this.projects[projectIndex]
+                    this.currentProject = this.projects[projectIndex];
 
-                    this.dom.CreateForm("task", projectIndex)
+                    this.dom.CreateForm("task", projectIndex);
 
                 }
             }

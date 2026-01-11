@@ -71,12 +71,30 @@ export class EventHandler{
         this.currentTask = {"dom": this.currentProject.dom.domTasks[taskIndex], "obj": this.currentProject.obj.items[taskIndex]};
     }
 
+    deleteTask(){
+        const taskIndex =this.currentProject.dom.currentTaskIndex;
+        this.currentProject.dom.domTasks.splice(taskIndex, 1);
+        this.currentProject.obj.items.splice(taskIndex, 1);
+        this.currentTask.dom.taskContainer.remove()
+    }
+    //moves the current task to the end of the project
+    repositionTask(){
+        const taskToMove = this.currentTask
+        this.deleteTask()
+        //push the task obj back into project obj
+        this.currentProject.obj.items.push(taskToMove.obj);
+        //push the task dom back into project dom
+        this.currentProject.dom.domTasks.push(taskToMove.dom);
+        //collapses task details
+        taskToMove.dom.minimize();
+        //re renders the task on the dom
+        this.currentProject.dom.projectTasksContainer.appendChild(taskToMove.dom.taskContainer)
+    }
+
     addListeners(){
 
         //debug button
         const debugButton = document.querySelector("#view-projects");
-        debugButton.textContent = "debug";
-        debugButton.addEventListener("click", ()=> console.log(this.currentTask.dom.updatePriorityElem("high")));
 
         document.body.addEventListener("change", (event)=> {
             if (event.target.id == "new-priority-input"){
@@ -106,31 +124,39 @@ export class EventHandler{
                 if (event.target.nodeName == "BUTTON"){
                     switch (event.target.id){
                         case ("task-complete-toggle"):
-                            console.log("toggle the complete property");
+                            if (this.currentTask.obj.completed == false){
+                                this.currentTask.obj.completed = true
+                                this.repositionTask()
+                            }
+                            else if (this.currentTask.obj.completed == true){
+                                this.currentTask.obj.completed = false
+                            }
                             break;
                         case ("task-details-toggle"):
-                            console.log("toggle the min and max methods");
+                            this.currentTask.dom.minimized ? this.currentTask.dom.maximize() : this.currentTask.dom.minimize()
                             break;
                         case ("task-delete-button"):
-                            console.log("delete this task");
+                            this.deleteTask();
                             break;
                     }
                 }
-                
-                switch (event.target.id){
+                if (this.currentTask.dom.minimized == false && this.currentTask.obj.completed == false){
+                    switch (event.target.id){
                     case ("task-title"):
-                        this.currentTask.dom.takeTitleInput();
-                        break;
-                    case("task-description"):
-                        this.currentTask.dom.takeDescriptionInput();
-                        break;
-                    case("task-due-date"):
-                        this.currentTask.dom.takeDueDateInput();
-                        break;
-                    case("task-priority"):
-                        this.currentTask.dom.takePriorityInput();
-                        break;
+                            this.currentTask.dom.takeTitleInput();
+                            break;
+                        case("task-description"):
+                            this.currentTask.dom.takeDescriptionInput();
+                            break;
+                        case("task-due-date"):
+                            this.currentTask.dom.takeDueDateInput();
+                            break;
+                        case("task-priority"):
+                            this.currentTask.dom.takePriorityInput();
+                            break;
+                    }
                 }
+
                 
             }
 
@@ -149,7 +175,7 @@ export class EventHandler{
                 else if (event.target.id == "new-title-submit"){
                     const newTitle = this.currentTask.dom.newTitleInput.value
                     if (newTitle != ""){
-                        this.currentTask.obj.title = newTitle
+                        this.currentTask.obj.name = newTitle
                         this.currentTask.dom.updateTitle(true, newTitle);
                     }
                 }

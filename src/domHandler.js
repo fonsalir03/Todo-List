@@ -43,6 +43,8 @@ class DOMTask {
         this.project = DOMProject;
         this.createContainersAndButtons();
         this.inEditMode = {"title": false, "description": false, "dueDate": false, "priority": false};
+        this.minimized = undefined
+        this.minimize();
     }
 
     appendChildren(){
@@ -85,6 +87,7 @@ class DOMTask {
 
     // taskCompletedToggle
     this.taskCompletedToggle = document.createElement("button");
+    this.taskCompletedToggle.textContent = "✓"
     this.taskCompletedToggle.setAttribute("id", "task-complete-toggle");
 
     // fulldetailsToggle : persistent
@@ -93,6 +96,7 @@ class DOMTask {
     
     // taskDeleteButton
     this.taskDeleteButton = document.createElement("button");
+    this.taskDeleteButton.textContent = "delete"
     this.taskDeleteButton.setAttribute("id", "task-delete-button");
     
     this.appendChildren();
@@ -103,13 +107,21 @@ class DOMTask {
 
     //minimize() will hide all non persistent elements
     minimize() {
+        this.minimized = true;
+        this.fullDetailsToggle.textContent = "▼"
+
         this.taskDescriptionContainer.hidden = true;
+        this.taskPriorityContainer.hidden = true;
         this.taskCompletedToggle.hidden = true;
         this.taskDeleteButton.hidden = true;
     }
     //maximize() will unhide all non persitent elements
     maximize() {
+        this.minimized = false;
+        this.fullDetailsToggle.textContent = "▲"
+
         this.taskDescriptionContainer.hidden = false;
+        this.taskPriorityContainer.hidden = false;
         this.taskCompletedToggle.hidden = false;
         this.taskDeleteButton.hidden = false;
     }

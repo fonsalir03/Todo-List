@@ -6,6 +6,7 @@ export class Project extends Handler{
         super();
         this.name = name;
         this.description = description;
+        this.currentTask = undefined
     }
     updateName(newName){
         this.name = newName;
@@ -14,7 +15,7 @@ export class Project extends Handler{
         this.description = newDescription;
     }
     add(title, description, dueDate, priority) {
-        const newTask = new TaskItem(title, description, dueDate, priority=1);
+        const newTask = new TaskItem(title, description, dueDate, priority, this);
         this.items.push(newTask);
         return newTask
     }

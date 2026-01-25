@@ -25,8 +25,15 @@ class DOMProject {
 
     // project add task button
     this.projectAddTaskButton = document.createElement("button");
+    this.projectAddTaskButton.textContent = "+";
     this.projectAddTaskButton.setAttribute("id", "project-add-task-button");
     this.projectContainer.appendChild(this.projectAddTaskButton);
+
+    // project delete task button
+    this.projectDel = document.createElement("button");
+    this.projectDel.textContent = "X";
+    this.projectDel.setAttribute("id", "project-del-button");
+    this.projectContainer.appendChild(this.projectDel);
 
     // project task container
     this.projectTasksContainer = document.createElement("div");

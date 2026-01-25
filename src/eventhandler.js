@@ -35,10 +35,10 @@ export class EventHandler{
         const taskDueDate = formData.get("date");
         const taskPriority = formData.get("priority");
 
-        const projectIndex = event.submitter.dataset.projectIndex;
-
+        this.projectIndex = event.submitter.dataset.projectIndex;
         //add task obj to project obj
-        const newTaskObj = this.projectHandler.items[projectIndex].add(taskTitle, taskDescription, taskDueDate, taskPriority);
+
+        const newTaskObj = this.projectHandler.items[this.projectIndex].add(taskTitle, taskDescription, taskDueDate, taskPriority);
         //render task in dom and add to project dom obj
         this.dom.renderTask(newTaskObj, this.currentProject.dom);
 
@@ -62,8 +62,8 @@ export class EventHandler{
     }
 
     updateCurrentProject(projectTitle){
-        const projectIndex = this.findIndexOf(projectTitle, this.projects);
-        this.currentProject = this.projects[projectIndex];
+        this.projectIndex = this.findIndexOf(projectTitle, this.projects);
+        this.currentProject = this.projects[this.projectIndex];
     }
 
     updateCurrentTask(){
@@ -75,7 +75,11 @@ export class EventHandler{
         const taskIndex =this.currentProject.dom.currentTaskIndex;
         this.currentProject.dom.domTasks.splice(taskIndex, 1);
         this.currentProject.obj.items.splice(taskIndex, 1);
-        this.currentTask.dom.taskContainer.remove()
+        this.currentTask.dom.taskContainer.remove();
+    }
+    deleteProject(){
+        this.currentProject.dom.projectContainer.remove();
+        this.projects.splice(this.projectIndex, 1);
     }
     //moves the current task to the end of the project
     repositionTask(){
@@ -95,6 +99,8 @@ export class EventHandler{
 
         //debug button
         const debugButton = document.querySelector("#view-projects");
+        debugButton.addEventListener("click", ()=> localStorage.removeItem("projects"))
+        debugButton.textContent = "debug"
 
         document.body.addEventListener("change", (event)=> {
             if (event.target.id == "new-priority-input"){
@@ -200,15 +206,19 @@ export class EventHandler{
                 if (event.target.id == "create-project"){
                     this.dom.CreateForm("project");
                 }
-                // create task button click event
-                else if (event.target.id == "project-add-task-button"){
+                // project button listeners
+                else if (event.target.parentElement.id == "project-container"){
 
                     const DOMProject = event.target.parentElement;
                     const DOMProjectTitle = DOMProject.children[0].textContent;
-                    const projectIndex = this.findIndexOf(DOMProjectTitle, this.projects);
-                    this.currentProject = this.projects[projectIndex];
+                    this.projectIndex = this.findIndexOf(DOMProjectTitle, this.projects);
+                    this.currentProject = this.projects[this.projectIndex];
 
-                    this.dom.CreateForm("task", projectIndex);
+                    if (event.target.id == "project-add-task-button"){
+                        this.dom.CreateForm("task", this.projectIndex);
+                    } else if (event.target.id == "project-del-button"){
+                        this.deleteProject();
+                    }
 
                 }
             }

@@ -1,12 +1,14 @@
+
 export class EventHandler{
     
-    constructor(dom, projectHandler){
+    constructor(dom, projectHandler, storage){
         this.dom = dom;
         this.projectHandler = projectHandler;
         this.addListeners();
         this.projects = [];
         this.currentProject = undefined;
         this.currentTask = {};
+        this.storage = storage;
     }
 
     findIndexOf(title, holder){
@@ -20,7 +22,7 @@ export class EventHandler{
         const projectTitle = formData.get("title");
         const projectDescription = formData.get("description");
         const newProjectObj = this.projectHandler.create(projectTitle, projectDescription);
-
+        this.storage.addProject(projectTitle, projectDescription);
         const newProjectDOM = this.dom.renderProject(newProjectObj);
         const newProject = {"dom": newProjectDOM, "obj" : newProjectObj};
         this.projects.push(newProject);
@@ -28,17 +30,15 @@ export class EventHandler{
     }
 
     taskFormHandler(event, formData){
-
+        this.projectIndex = event.submitter.dataset.projectIndex;
         //form inputs
         const taskTitle = formData.get("title");
         const taskDescription = formData.get("description");
         const taskDueDate = formData.get("date");
         const taskPriority = formData.get("priority");
 
-        this.projectIndex = event.submitter.dataset.projectIndex;
-        //add task obj to project obj
-
         const newTaskObj = this.projectHandler.items[this.projectIndex].add(taskTitle, taskDescription, taskDueDate, taskPriority);
+        this.storage.addTask(this.projectIndex,taskTitle, taskDescription, taskDueDate, taskPriority, false )
         //render task in dom and add to project dom obj
         this.dom.renderTask(newTaskObj, this.currentProject.dom);
 
@@ -67,24 +67,29 @@ export class EventHandler{
     }
 
     updateCurrentTask(){
-        const taskIndex = this.currentProject.dom.currentTaskIndex;
-        this.currentTask = {"dom": this.currentProject.dom.domTasks[taskIndex], "obj": this.currentProject.obj.items[taskIndex]};
+        this.taskIndex = this.currentProject.dom.currentTaskIndex;
+        this.currentTask = {"dom": this.currentProject.dom.domTasks[this.taskIndex], "obj": this.currentProject.obj.items[this.taskIndex]};
     }
 
-    deleteTask(){
-        const taskIndex =this.currentProject.dom.currentTaskIndex;
-        this.currentProject.dom.domTasks.splice(taskIndex, 1);
-        this.currentProject.obj.items.splice(taskIndex, 1);
+    deleteTask(fromStorage=true){
+        this.taskIndex = this.currentProject.dom.currentTaskIndex;
+        this.currentProject.dom.domTasks.splice(this.taskIndex, 1);
+        this.currentProject.obj.items.splice(this.taskIndex, 1);
+        if (fromStorage==true){
+            this.storage.deleteTask(this.projectIndex, this.taskIndex)
+        }
         this.currentTask.dom.taskContainer.remove();
     }
     deleteProject(){
         this.currentProject.dom.projectContainer.remove();
         this.projects.splice(this.projectIndex, 1);
+        this.projectHandler.items.splice(this.projectIndex, 1);
+        this.storage.deleteProject(this.projectIndex)
     }
     //moves the current task to the end of the project
     repositionTask(){
         const taskToMove = this.currentTask
-        this.deleteTask()
+        this.deleteTask(false);
         //push the task obj back into project obj
         this.currentProject.obj.items.push(taskToMove.obj);
         //push the task dom back into project dom
@@ -99,19 +104,21 @@ export class EventHandler{
 
         //debug button
         const debugButton = document.querySelector("#view-projects");
-        debugButton.addEventListener("click", ()=> localStorage.removeItem("projects"))
+        debugButton.addEventListener("click", ()=> this.storage.clear())
         debugButton.textContent = "debug"
 
         document.body.addEventListener("change", (event)=> {
             if (event.target.id == "new-priority-input"){
 
                 this.currentTask.obj.priority = event.target.value;
+                this.storage.modifyTask(this.projectIndex, this.taskIndex, undefined, undefined, undefined, event.target.value)
                 this.currentTask.dom.updatePriorityElem(this.currentTask.obj.priority);
 
             }
             if (event.target.id == "new-task-due-date"){
 
                 this.currentTask.obj.dueDate = event.target.value;
+                this.storage.modifyTask(this.projectIndex, this.taskIndex, undefined, undefined, event.target.value)
                 this.currentTask.dom.updateDueDate(this.currentTask.obj.dueDate);
 
             }
@@ -131,12 +138,13 @@ export class EventHandler{
                     switch (event.target.id){
                         case ("task-complete-toggle"):
                             if (this.currentTask.obj.completed == false){
-                                this.currentTask.obj.completed = true
+                                this.currentTask.obj.completed = true;
                                 this.repositionTask()
                             }
                             else if (this.currentTask.obj.completed == true){
-                                this.currentTask.obj.completed = false
+                                this.currentTask.obj.completed = false;
                             }
+                            this.storage.modifyTask(this.projectIndex, this.taskIndex, undefined, undefined, undefined, undefined, this.currentTask.obj.completed);
                             break;
                         case ("task-details-toggle"):
                             this.currentTask.dom.minimized ? this.currentTask.dom.maximize() : this.currentTask.dom.minimize()
@@ -182,6 +190,7 @@ export class EventHandler{
                     const newTitle = this.currentTask.dom.newTitleInput.value
                     if (newTitle != ""){
                         this.currentTask.obj.name = newTitle
+                        this.storage.modifyTask(this.projectIndex, this.taskIndex,newTitle)
                         this.currentTask.dom.updateTitle(true, newTitle);
                     }
                 }
@@ -192,6 +201,7 @@ export class EventHandler{
                     const newDescription = this.currentTask.dom.newDescriptionInput.value
                     if (newDescription != ""){
                         this.currentTask.obj.description = newDescription;
+                        this.storage.modifyTask(this.projectIndex, this.taskIndex, undefined, newDescription)
                         this.currentTask.dom.updateDescription(true, newDescription);
                     }
                 }

@@ -9,6 +9,22 @@ export class EventHandler{
         this.currentProject = undefined;
         this.currentTask = {};
         this.storage = storage;
+
+        if (this.storage.projects.len != 0){
+            this.storage.projects.forEach((project)=>this.loadFromStorage(project))
+        }
+    }
+
+    loadFromStorage(project){
+        const newProjectObj = this.projectHandler.create(project.projectName, project.projectDescription);
+        const newProjectDom = this.dom.renderProject(newProjectObj);
+        this.projects.push({"dom": newProjectDom, "obj": newProjectObj});
+
+        for (let taskIndex = 0; taskIndex < project.taskList.length; taskIndex++){
+            const task = project.taskList[taskIndex]
+            const newTaskObj = newProjectObj.add(task.name, task.description, task.dueDate, task.priority, task.completed);
+            this.dom.renderTask(newTaskObj, newProjectDom);
+        }
     }
 
     findIndexOf(title, holder){
@@ -21,7 +37,9 @@ export class EventHandler{
         
         const projectTitle = formData.get("title");
         const projectDescription = formData.get("description");
+
         const newProjectObj = this.projectHandler.create(projectTitle, projectDescription);
+
         this.storage.addProject(projectTitle, projectDescription);
         const newProjectDOM = this.dom.renderProject(newProjectObj);
         const newProject = {"dom": newProjectDOM, "obj" : newProjectObj};
@@ -37,7 +55,8 @@ export class EventHandler{
         const taskDueDate = formData.get("date");
         const taskPriority = formData.get("priority");
 
-        const newTaskObj = this.projectHandler.items[this.projectIndex].add(taskTitle, taskDescription, taskDueDate, taskPriority);
+        const newTaskObj = this.projectHandler.items[this.projectIndex].add(taskTitle, taskDescription, taskDueDate, taskPriority, false);
+
         this.storage.addTask(this.projectIndex,taskTitle, taskDescription, taskDueDate, taskPriority, false )
         //render task in dom and add to project dom obj
         this.dom.renderTask(newTaskObj, this.currentProject.dom);

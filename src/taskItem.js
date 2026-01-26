@@ -7,12 +7,13 @@ export class TaskItem{
     #priority = undefined
     completed = false;
 
-    constructor(name, description, dueDate, priority, project){
+    constructor(name, description, dueDate, priority, completeStatus, project){
         this.name = name;
         this.description = description;
         this.dueDate = dueDate
         this.priority = priority
         this.project = project
+        this.completed = completeStatus
     }
 
     updateProjectCurrentTaskIndex(){

@@ -14,8 +14,8 @@ export class Project extends Handler{
     updateDescription(newDescription){
         this.description = newDescription;
     }
-    add(title, description, dueDate, priority) {
-        const newTask = new TaskItem(title, description, dueDate, priority, this);
+    add(title, description, dueDate, priority, completeStatus) {
+        const newTask = new TaskItem(title, description, dueDate, priority, completeStatus, this);
         this.items.push(newTask);
         return newTask
     }

@@ -50,7 +50,7 @@ class DOMTask {
         this.project = DOMProject;
         this.createContainersAndButtons();
         this.inEditMode = {"title": false, "description": false, "dueDate": false, "priority": false};
-        this.minimized = undefined
+        this.minimized = undefined;
         this.minimize();
     }
 
@@ -451,6 +451,7 @@ export class DomHandler{
         this.dialog.appendChild(this.formCancelButton);
 
         document.body.appendChild(this.dialog);
+        document.body.insertBefore(this.dialog, this.mainContentDiv)
         this.dialog.show();
     }
 

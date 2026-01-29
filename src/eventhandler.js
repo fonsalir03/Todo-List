@@ -90,13 +90,11 @@ export class EventHandler{
         this.currentTask = {"dom": this.currentProject.dom.domTasks[this.taskIndex], "obj": this.currentProject.obj.items[this.taskIndex]};
     }
 
-    deleteTask(fromStorage=true){
+    deleteTask(){
         this.taskIndex = this.currentProject.dom.currentTaskIndex;
         this.currentProject.dom.domTasks.splice(this.taskIndex, 1);
         this.currentProject.obj.items.splice(this.taskIndex, 1);
-        if (fromStorage==true){
-            this.storage.deleteTask(this.projectIndex, this.taskIndex)
-        }
+        this.storage.deleteTask(this.projectIndex, this.taskIndex)
         this.currentTask.dom.taskContainer.remove();
     }
     deleteProject(){
@@ -107,16 +105,19 @@ export class EventHandler{
     }
     //moves the current task to the end of the project
     repositionTask(){
-        const taskToMove = this.currentTask
-        this.deleteTask(false);
+        const taskOBJ = this.currentTask.obj
+        const taskDOM = this.currentTask.dom
+        this.deleteTask();
         //push the task obj back into project obj
-        this.currentProject.obj.items.push(taskToMove.obj);
+        this.currentProject.obj.items.push(taskOBJ);
+        //push task back into the storage
+        this.storage.addTask(this.projectIndex,taskOBJ.name, taskOBJ.description, taskOBJ.dueDate, taskOBJ.priority, taskOBJ.completed )
         //push the task dom back into project dom
-        this.currentProject.dom.domTasks.push(taskToMove.dom);
+        this.currentProject.dom.domTasks.push(taskDOM);
         //collapses task details
-        taskToMove.dom.minimize();
+        taskDOM.minimize();
         //re renders the task on the dom
-        this.currentProject.dom.projectTasksContainer.appendChild(taskToMove.dom.taskContainer)
+        this.currentProject.dom.projectTasksContainer.appendChild(taskDOM.taskContainer)
     }
 
     addListeners(){
@@ -158,12 +159,12 @@ export class EventHandler{
                         case ("task-complete-toggle"):
                             if (this.currentTask.obj.completed == false){
                                 this.currentTask.obj.completed = true;
-                                this.repositionTask()
                             }
                             else if (this.currentTask.obj.completed == true){
                                 this.currentTask.obj.completed = false;
                             }
                             this.storage.modifyTask(this.projectIndex, this.taskIndex, undefined, undefined, undefined, undefined, this.currentTask.obj.completed);
+                            this.repositionTask()
                             break;
                         case ("task-details-toggle"):
                             this.currentTask.dom.minimized ? this.currentTask.dom.maximize() : this.currentTask.dom.minimize()

@@ -40,12 +40,12 @@ export class TaskItem{
     }
     set dueDate(dateStr){
         //const year = dateArr[0], monthIndex = dateArr[1] - 1, day = dateArr[2];
-        const newDate = parse(dateStr, "yyyy-MM-dd", new Date())
-        this.#dueDate = newDate
-
-        if (isPast(newDate) == false){
-            //TASK IS OUTDATED
+        if(dateStr.includes("/")){
+            this.#dueDate = parse(dateStr, "MM/dd/yyyy", new Date())
+        }else {
+            this.#dueDate = parse(dateStr, "yyyy-MM-dd", new Date())
         }
+
     }
 
     get priority(){

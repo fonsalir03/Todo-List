@@ -13,21 +13,9 @@ class DOMProject {
     this.projectContainer.setAttribute("id", "project-container");
 
     // project title container
-    this.projectTitleContainer = document.createElement("div");
+    this.projectTitleContainer = document.createElement("h1");
     this.projectTitleContainer.setAttribute("id", "project-title");
     this.projectContainer.appendChild(this.projectTitleContainer);
-
-    // project description
-    this.projectDescription = document.createElement("div");
-    this.projectDescription.setAttribute("id", "project-description");
-    this.projectDescription.hidden = true;
-    this.projectContainer.appendChild(this.projectDescription);
-
-    // project add task button
-    this.projectAddTaskButton = document.createElement("button");
-    this.projectAddTaskButton.textContent = "+";
-    this.projectAddTaskButton.setAttribute("id", "project-add-task-button");
-    this.projectContainer.appendChild(this.projectAddTaskButton);
 
     // project delete task button
     this.projectDel = document.createElement("button");
@@ -35,11 +23,23 @@ class DOMProject {
     this.projectDel.setAttribute("id", "project-del-button");
     this.projectContainer.appendChild(this.projectDel);
 
+    // project description
+    this.projectDescription = document.createElement("h4");
+    this.projectDescription.setAttribute("id", "project-description");
+    this.projectDescription.hidden = true;
+    this.projectContainer.appendChild(this.projectDescription);
+
     // project task container
     this.projectTasksContainer = document.createElement("div");
     this.projectTasksContainer.setAttribute("id", "project-tasks-container");
     this.projectContainer.appendChild(this.projectTasksContainer);
     
+    // project add task button
+    this.projectAddTaskButton = document.createElement("button");
+    this.projectAddTaskButton.textContent = "Add Task";
+    this.projectAddTaskButton.setAttribute("id", "project-add-task-button");
+    this.projectContainer.appendChild(this.projectAddTaskButton);
+
     }
 
 }
@@ -383,34 +383,49 @@ export class DomHandler{
         this.form.setAttribute("data-type", type);
         this.dialog.appendChild(this.form);
 
+        //form title container
+        this.formTitleContainer = document.createElement("div");
+        this.formTitleContainer.setAttribute("id", "form-title-container")
         //  form title
         this.formTitleInput = document.createElement("input");
         this.formTitleInput.setAttribute("type", "text");
         this.formTitleInput.setAttribute("id", "form-title");
         this.formTitleInput.setAttribute("required", "");
         this.formTitleInput.setAttribute("name", "title");
-        this.form.appendChild(this.formTitleInput);
+        this.formTitleContainer.appendChild(this.formTitleInput)
+        this.form.appendChild(this.formTitleContainer);
 
+        //form description container
+        this.formDescriptionContainer = document.createElement("div")
+        this.formDescriptionContainer.setAttribute("id", "form-description-container")
         //  form description
         this.formDescriptionInput = document.createElement("textarea");
         this.formDescriptionInput.setAttribute("id", "form-description");
         this.formDescriptionInput.setAttribute("name","description");
-        this.form.appendChild(this.formDescriptionInput);
+        this.formDescriptionContainer.appendChild(this.formDescriptionInput)
+        this.form.appendChild(this.formDescriptionContainer);
 
         if (type == "task"){
+            //form date picker container
+            this.formDatePickerContainer = document.createElement("div");
+            this.formDatePickerContainer.setAttribute("id", "form-date-picker-container");
             //  form date picker
             this.formDateInput = document.createElement("input");
             this.formDateInput.setAttribute("type", "date");
             this.formDateInput.setAttribute("id", "form-date");
             this.formDateInput.setAttribute("required", "");
             this.formDateInput.setAttribute("name", "date");
-            this.form.appendChild(this.formDateInput);
+            this.formDatePickerContainer.appendChild(this.formDateInput);
+            this.form.appendChild(this.formDatePickerContainer);
 
+            //priority container
+            this.formPriorityContainer = document.createElement("div");
+            this.formPriorityContainer.setAttribute("id", "form-priority-input-container");
             //  priority
             this.formPriorityLabel = document.createElement("label");
             this.formPriorityLabel.textContent = "How important is this task?";
             this.formPriorityLabel.setAttribute("for","priority");
-            this.form.appendChild(this.formPriorityLabel);
+            this.formPriorityContainer.appendChild(this.formPriorityLabel)
 
             //  create the priority selection
             this.formPriority = document.createElement("select");
@@ -434,7 +449,8 @@ export class DomHandler{
             this.formPriorityOption3.textContent = "high";
             this.formPriority.appendChild(this.formPriorityOption3);
 
-            this.form.appendChild(this.formPriority);
+            this.formPriorityContainer.appendChild(this.formPriority)
+            this.form.appendChild(this.formPriorityContainer);
         }
         
         //Submit button

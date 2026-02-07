@@ -27,8 +27,15 @@ export class EventHandler{
         }
     }
 
-    findIndexOf(title, holder){
-        return holder.findIndex(item => item.obj.name == title);
+    findIndexOf(domElement, holder){
+        const elemID = domElement.id
+        if (elemID == "project-container"){
+            return holder.findIndex(item => item.dom.projectContainer == domElement);
+        }
+        if (elemId == "task-container"){
+            return holder.findIndex(item => item.dom.taskContainer == domElement);
+        }
+        //return holder.findIndex(item => item.dom.container == domElement);
     }
 
     // callback functions
@@ -80,8 +87,8 @@ export class EventHandler{
 
     }
 
-    updateCurrentProject(projectTitle){
-        this.projectIndex = this.findIndexOf(projectTitle, this.projects);
+    updateCurrentProject(projectContainer){
+        this.projectIndex = this.findIndexOf(projectContainer, this.projects);
         this.currentProject = this.projects[this.projectIndex];
     }
 
@@ -124,7 +131,10 @@ export class EventHandler{
 
         //debug button
         const debugButton = document.querySelector("#view-projects");
-        debugButton.addEventListener("click", ()=> this.storage.clear())
+        debugButton.addEventListener("click", ()=>  
+            this.storage.clear()
+            //load json
+        )
         debugButton.textContent = "debug"
 
         document.body.addEventListener("change", (event)=> {
@@ -147,8 +157,8 @@ export class EventHandler{
 
         document.body.addEventListener("click", (event) => {
             if (event.target.parentElement.id == "task-container" ){
-                const projectTitle = event.target.parentElement.parentElement.parentElement.firstChild.textContent;
-                this.updateCurrentProject(projectTitle);
+                const projectContainer = event.target.parentElement.parentElement.parentElement;
+                this.updateCurrentProject(projectContainer);
                 this.updateCurrentTask();
 
                 //closes any open inputs
@@ -196,8 +206,8 @@ export class EventHandler{
 
 
             else if (event.target.parentElement.parentElement.id == "task-container"){
-                const projectTitle = event.target.parentElement.parentElement.parentElement.parentElement.firstChild.textContent
-                this.updateCurrentProject(projectTitle);
+                const projectContainer = event.target.parentElement.parentElement.parentElement.parentElement
+                this.updateCurrentProject(projectContainer);
                 this.updateCurrentTask();
                 
                 if (event.target.id == "new-date-cancel"){
@@ -239,15 +249,13 @@ export class EventHandler{
                 // project button listeners
                 else if (event.target.parentElement.id == "project-container"){
 
-                    const DOMProject = event.target.parentElement;
-                    const DOMProjectTitle = DOMProject.children[0].textContent;
-                    this.projectIndex = this.findIndexOf(DOMProjectTitle, this.projects);
-                    this.currentProject = this.projects[this.projectIndex];
+                    const projectContainer = event.target.parentElement;
+                    this.updateCurrentProject(projectContainer);
 
                     if (event.target.id == "project-add-task-button"){
                         this.dom.CreateForm("task", this.projectIndex);
                     } else if (event.target.id == "project-del-button"){
-                        this.deleteProject();
+                        this.deleteProject()
                     }
 
                 }

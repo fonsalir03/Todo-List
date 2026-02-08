@@ -1,4 +1,3 @@
-
 export class EventHandler{
     
     constructor(dom, projectHandler, storage){
@@ -156,22 +155,25 @@ export class EventHandler{
         })
 
         document.body.addEventListener("click", (event) => {
-            if (event.target.parentElement.id == "task-container" ){
+            
+            if (event.target.parentElement.id == "task-container"){
                 const projectContainer = event.target.parentElement.parentElement.parentElement;
                 this.updateCurrentProject(projectContainer);
                 this.updateCurrentTask();
 
                 //closes any open inputs
                 this.projects.forEach( (project)=> project.dom.domTasks.forEach( (task)=> task.checkForOpenInputs() ? task.closeOpenInputs() : ""));
-
-                if (event.target.nodeName == "BUTTON"){
+                if (event.target.nodeName == "BUTTON" || event.target.nodeName == "IMG"){
+                    
                     switch (event.target.id){
                         case ("task-complete-toggle"):
                             if (this.currentTask.obj.completed == false){
                                 this.currentTask.obj.completed = true;
+                                this.currentTask.dom.toggleCompleteIcon(true);
                             }
                             else if (this.currentTask.obj.completed == true){
                                 this.currentTask.obj.completed = false;
+                                this.currentTask.dom.toggleCompleteIcon(false);
                             }
                             this.storage.modifyTask(this.projectIndex, this.taskIndex, undefined, undefined, undefined, undefined, this.currentTask.obj.completed);
                             this.repositionTask()

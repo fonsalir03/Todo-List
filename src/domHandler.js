@@ -1,4 +1,3 @@
-
 class DOMProject {
     constructor(){
         this.createProjectContainers();
@@ -7,7 +6,6 @@ class DOMProject {
     }
 
     createProjectContainers(){
-    
     // project container
     this.projectContainer = document.createElement("div");
     this.projectContainer.setAttribute("id", "project-container");
@@ -18,8 +16,8 @@ class DOMProject {
     this.projectContainer.appendChild(this.projectTitleContainer);
 
     // project delete task button
-    this.projectDel = document.createElement("button");
-    this.projectDel.textContent = "X";
+    this.projectDel = document.createElement("img");
+    this.projectDel.src = "https://www.svgrepo.com/show/470444/trash.svg";
     this.projectDel.setAttribute("id", "project-del-button");
     this.projectContainer.appendChild(this.projectDel);
 
@@ -93,16 +91,17 @@ class DOMTask {
     this.taskPriorityContainer.setAttribute("id", "task-priority");
 
     // taskCompletedToggle
-    this.taskCompletedToggle = document.createElement("button");
-    this.taskCompletedToggle.textContent = "✓"
+    this.taskCompletedToggle = document.createElement("img");
+    this.taskCompletedToggle.src = "https://www.svgrepo.com/show/346672/checkbox-blank-circle.svg"
     this.taskCompletedToggle.setAttribute("id", "task-complete-toggle");
 
     // fulldetailsToggle : persistent
-    this.fullDetailsToggle = document.createElement("button");
+    this.fullDetailsToggle = document.createElement("img");
     this.fullDetailsToggle.setAttribute("id", "task-details-toggle");
     
     // taskDeleteButton
-    this.taskDeleteButton = document.createElement("button");
+    this.taskDeleteButton = document.createElement("img");
+    this.taskDeleteButton.src = "https://www.svgrepo.com/show/470444/trash.svg"
     this.taskDeleteButton.textContent = "delete"
     this.taskDeleteButton.setAttribute("id", "task-delete-button");
     
@@ -112,24 +111,32 @@ class DOMTask {
 
     }
 
+    toggleCompleteIcon(state){
+        //incomplete icon https://www.svgrepo.com/show/346672/checkbox-blank-circle.svg
+        //complete icon https://www.svgrepo.com/show/501150/complete.svg
+        state ? this.taskCompletedToggle.src = "https://www.svgrepo.com/show/501150/complete.svg" : this.taskCompletedToggle.src = "https://www.svgrepo.com/show/346672/checkbox-blank-circle.svg"
+    }
+
     //minimize() will hide all non persistent elements
     minimize() {
+        //expand less https://www.svgrepo.com/show/433053/expand-less.svg
+
         this.minimized = true;
-        this.fullDetailsToggle.textContent = "▼"
+        this.fullDetailsToggle.src = "https://www.svgrepo.com/show/433053/expand-less.svg"
 
         this.taskDescriptionContainer.hidden = true;
         this.taskPriorityContainer.hidden = true;
-        this.taskCompletedToggle.hidden = true;
         this.taskDeleteButton.hidden = true;
     }
     //maximize() will unhide all non persitent elements
     maximize() {
+        //expand-more https://www.svgrepo.com/show/433057/expand-more.svg
+
         this.minimized = false;
-        this.fullDetailsToggle.textContent = "▲"
+        this.fullDetailsToggle.src = "https://www.svgrepo.com/show/433057/expand-more.svg"
 
         this.taskDescriptionContainer.hidden = false;
         this.taskPriorityContainer.hidden = false;
-        this.taskCompletedToggle.hidden = false;
         this.taskDeleteButton.hidden = false;
     }
 
@@ -386,6 +393,7 @@ export class DomHandler{
         //form title container
         this.formTitleContainer = document.createElement("div");
         this.formTitleContainer.setAttribute("id", "form-title-container")
+        this.formTitleContainer.textContent = "Name?"
         //  form title
         this.formTitleInput = document.createElement("input");
         this.formTitleInput.setAttribute("type", "text");
@@ -397,7 +405,8 @@ export class DomHandler{
 
         //form description container
         this.formDescriptionContainer = document.createElement("div")
-        this.formDescriptionContainer.setAttribute("id", "form-description-container")
+        this.formDescriptionContainer.setAttribute("id", "form-description-container");
+        this.formDescriptionContainer.textContent = "Description?"
         //  form description
         this.formDescriptionInput = document.createElement("textarea");
         this.formDescriptionInput.setAttribute("id", "form-description");
@@ -409,6 +418,7 @@ export class DomHandler{
             //form date picker container
             this.formDatePickerContainer = document.createElement("div");
             this.formDatePickerContainer.setAttribute("id", "form-date-picker-container");
+            this.formDatePickerContainer.textContent = "When is this task due?";
             //  form date picker
             this.formDateInput = document.createElement("input");
             this.formDateInput.setAttribute("type", "date");
@@ -492,7 +502,8 @@ export class DomHandler{
         newDOMTask.taskTitleContainer.textContent = taskObj.name;
         newDOMTask.taskDescriptionContainer.textContent = taskObj.description;
         newDOMTask.taskDuedateContainer.textContent = taskObj.dueDate;
-        newDOMTask.taskPriorityContainer.textContent = "priority: " + taskObj.priority
+        newDOMTask.taskPriorityContainer.textContent = "priority: " + taskObj.priority;
+        newDOMTask.toggleCompleteIcon(taskObj.completed)
         //project task item container
 
     }

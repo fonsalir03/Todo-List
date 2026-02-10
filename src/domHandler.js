@@ -227,6 +227,7 @@ class DOMTask {
             //creation of the cancel button
             this.newDateCancel = document.createElement("button");
             this.newDateCancel.setAttribute("id", "new-date-cancel");
+            this.newDateCancel.textContent = "X"
 
             this.taskDuedateContainer.appendChild(this.newDateInput);
             this.taskDuedateContainer.appendChild(this.newDateCancel);
@@ -257,7 +258,7 @@ class DOMTask {
 
         //options
         this.priorityInputOptionPlaceholder = document.createElement("option");
-        this.priorityInputOptionPlaceholder.textContent = "how urgent is this task?";
+        this.priorityInputOptionPlaceholder.textContent = "new priority?";
         this.priorityInputOptionPlaceholder.value = ""
 
         this.priorityInputOptionLow = document.createElement("option");
@@ -274,6 +275,7 @@ class DOMTask {
 
         //create cancel button
         this.priorityInputCancel = document.createElement("button");
+        this.priorityInputCancel.textContent = "X"
         this.priorityInputCancel.setAttribute("id", "new-priority-cancel");
 
         //append the options

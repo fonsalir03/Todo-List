@@ -1,0 +1,196 @@
+body {
+    background-color: hsl(220, 59%, 20%);
+    margin: 0;
+}
+h1, h4 {
+    margin: 0;
+}
+#main-content{
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 4.5fr;
+}
+#toolbar {
+    background-color: hsl(220, 58%, 28%);
+    padding: 5%;
+    display: flex;
+    justify-content: center;
+}
+#project-buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    gap: 4%;
+}
+#project-container{
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: 1fr 1fr 1fr 6fr;
+}
+#project-del-button{
+    grid-column-start: 2;
+    width: 25px;
+    height: 25px;
+    align-self: center;
+}
+#project-add-task-button{
+    justify-self: center;
+    grid-row-start: 3;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    height: 50px;
+    width: 75px;
+}
+#project-title{
+    grid-column-start: 1;
+    grid-row-start: 1;
+}
+#project-description {
+    opacity: 0.5;
+    grid-column-start: 1;
+    grid-row: 2;
+}
+#project-tasks-container{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 4;
+}
+#project-buttons button:hover, #project-container button:hover, #data-dialog button:hover, select:hover, #form-date:hover, #form-description:hover, #form-title:hover{
+    background-color: hsl(220, 56%, 27%);
+}
+#project-buttons button {
+    background-color: hsl(220, 58%, 28%);
+    border: solid hsla(221, 58%, 22%, 0.356);
+    border-radius: 3px;
+    height: fit-content;
+    width: fit-content;
+}
+#viewer{
+    background-color: hsl(220, 58%, 25%);
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 10%;
+}
+
+#project-container button {
+    background-color: hsl(220, 58%, 28%);
+    border: solid hsla(221, 58%, 22%, 0.356);
+    border-radius: 3px;
+}
+
+#data-dialog {
+    border-radius: 5px;
+    background-color: rgb(26, 50, 99);
+    z-index: +1;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: 20vw;
+    min-width: fit-content;
+    border: black solid 2px;
+}
+#data-form{
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+#data-form div{
+    display: flex;
+    justify-content: space-between;
+}
+div input, div textarea, select, #data-dialog button{
+    background-color: rgb(36, 61, 110);
+    border-radius: 3px;
+    border: none
+}
+#form-title, #form-description{
+    width: 55%;
+}
+#form-date{
+    width: fit-content;
+    height: fit-content;
+    align-self: center;
+}
+select{
+    width: fit-content;
+}
+#data-dialog button{
+    width: 50%;
+    align-self: center;
+}
+#task-container {
+    border-bottom: solid black 1px;
+    display: grid;
+    grid-template-columns: 10% 15fr;
+}
+#task-title{
+    grid-column-start: 2;
+    overflow-wrap: anywhere;
+    max-width: 50em
+}
+#task-description{
+    grid-column-start: 2;
+    opacity: 0.5;
+    overflow-wrap: anywhere;
+    max-width: 50em
+}
+#task-due-date{
+    grid-column: 3 / span 2;
+    grid-row-start: 1;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(65px,1fr));
+}
+#task-due-date input, #task-due-date button {
+    min-height: fit-content;
+    max-height: 70px;
+    justify-self: center;
+}
+#new-date-cancel{
+    width: 50px;
+}
+
+#task-priority{
+    grid-column-start: 3;
+    grid-column-end: 5 ;
+    grid-row-start: 2;
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(65px,1fr));
+}
+#task-priority select, #task-priority button{
+    min-height: fit-content;
+    max-height: 70px;
+    justify-self: center;
+}
+#new-priority-cancel{
+    width: 50px;
+}
+
+#task-complete-toggle{
+    grid-column-start: 1;
+    grid-row-start: 1;
+    width: 25px;
+    height: 25px;
+}
+img:hover{
+    opacity: 0.5;
+}
+#task-delete-button{
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    justify-self: center;
+    width: 25px;
+    height: 25px;
+}
+#task-details-toggle{
+    grid-column-start: 5;
+    grid-row-start: 2;
+    justify-self: center;
+    width: 25px;
+    height: 25px;
+}

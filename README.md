@@ -24,4 +24,4 @@ This web application was made to showcase understanding of basic CRUD operations
 ## Features to implement
 - Allow the user to have the option to select one projects
 
-[preview.png]([https://i.postimg.cc/3R6YHFv6/preview.png]))
+![preview.png]([https://i.postimg.cc/3R6YHFv6/preview.png])

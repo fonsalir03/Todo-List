@@ -371,12 +371,6 @@ export class DomHandler{
         this.createProjectButton.setAttribute("id", "create-project");
         this.createProjectButton.textContent = "Create Project";
         this.projectSectionDiv.appendChild(this.createProjectButton);
-
-        //view projects button
-        this.viewProjectsButton = document.createElement("button");
-        this.viewProjectsButton.setAttribute("id", "view-projects");
-        this.viewProjectsButton.textContent = "All Projects";
-        this.projectSectionDiv.appendChild(this.viewProjectsButton);
     }
 
     CreateForm(type, projectIndex){

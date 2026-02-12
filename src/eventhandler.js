@@ -39,18 +39,31 @@ export class EventHandler{
 
     // callback functions
 
+    newProject(title, desc){
+        const newProjectObj = this.projectHandler.create(title, desc);
+
+        this.storage.addProject(title, desc);
+        const newProjectDOM = this.dom.renderProject(newProjectObj);
+        const newProject = {"dom": newProjectDOM, "obj" : newProjectObj};
+        this.projects.push(newProject);
+        return newProject
+    }
+
     projectFormHandler(formData){
         
         const projectTitle = formData.get("title");
         const projectDescription = formData.get("description");
 
-        const newProjectObj = this.projectHandler.create(projectTitle, projectDescription);
+        newProject(projectTitle, projectDescription)
 
-        this.storage.addProject(projectTitle, projectDescription);
-        const newProjectDOM = this.dom.renderProject(newProjectObj);
-        const newProject = {"dom": newProjectDOM, "obj" : newProjectObj};
-        this.projects.push(newProject);
+    }
 
+    newTask(projectIndex, title, desc, due, prio, completeStatus){
+        const newTaskObj = this.projectHandler.items[projectIndex].add(title, desc, due, prio, completeStatus);
+
+        this.storage.addTask(projectIndex,title, desc, due, prio, completeStatus)
+        //render task in dom and add to project dom obj
+        this.dom.renderTask(newTaskObj, this.currentProject.dom);
     }
 
     taskFormHandler(event, formData){
@@ -61,11 +74,7 @@ export class EventHandler{
         const taskDueDate = formData.get("date");
         const taskPriority = formData.get("priority");
 
-        const newTaskObj = this.projectHandler.items[this.projectIndex].add(taskTitle, taskDescription, taskDueDate, taskPriority, false);
-
-        this.storage.addTask(this.projectIndex,taskTitle, taskDescription, taskDueDate, taskPriority, false )
-        //render task in dom and add to project dom obj
-        this.dom.renderTask(newTaskObj, this.currentProject.dom);
+        this.newTask(this.projectIndex, taskTitle, taskDescription, taskDueDate, taskPriority, false);
 
     }
 
@@ -128,14 +137,6 @@ export class EventHandler{
 
     addListeners(){
 
-        //debug button
-        const debugButton = document.querySelector("#view-projects");
-        debugButton.addEventListener("click", ()=>  
-            this.storage.clear()
-            //load json
-        )
-        debugButton.textContent = "debug"
-
         document.body.addEventListener("change", (event)=> {
             if (event.target.id == "new-priority-input"){
 
@@ -176,7 +177,7 @@ export class EventHandler{
                                 this.currentTask.dom.toggleCompleteIcon(false);
                             }
                             this.storage.modifyTask(this.projectIndex, this.taskIndex, undefined, undefined, undefined, undefined, this.currentTask.obj.completed);
-                            this.repositionTask()
+                            //this.repositionTask()
                             break;
                         case ("task-details-toggle"):
                             this.currentTask.dom.minimized ? this.currentTask.dom.maximize() : this.currentTask.dom.minimize()
